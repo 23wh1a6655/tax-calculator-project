@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tax-pipeline
+spec:
+  tasks:
+    - name: install
+      taskSpec:
+        steps:
+          - name: npm-install
+            image: node:18
+            script: |
+              npm install
+
+    - name: test
+      runAfter: [install]
+      taskSpec:
+        steps:
+          - name: run-tests
+            image: node:18
+            script: |
+              npx jasmine
+
+    - name: build
+      runAfter: [test]
+      taskSpec:
+        steps:
+          - name: build-app
+            image: node:18
+            script: |
+              echo "Build step completed"
